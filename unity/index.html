@@ -1,89 +1,51 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Minigames</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
-    <link rel="stylesheet" href="TemplateData/style.css" />
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
     <script src="TemplateData/UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
-
+    
     <script>
-      
-      var mainUnityInstance;
+        var mainUnityInstance;
 
-      window["handleUnityMessage"] = function (params) {
-        window.parent.postMessage(
-          {
-            name: "onUnityMessage",
+        window['handleUnityMessage'] = function (params) {
+        window.parent.postMessage({
+            name: 'onUnityMessage',
             data: params,
-          },
-          "*"
-        );
-      };
+            }, '*');
+        };
 
-      window["handleUnitySceneLoaded"] = function (
-        name,
-        buildIndex,
-        isLoaded,
-        isValid
-      ) {
-        window.parent.postMessage(
-          {
-            name: "onUnitySceneLoaded",
+        window['handleUnitySceneLoaded'] = function (name, buildIndex, isLoaded, isValid) {
+        window.parent.postMessage({
+            name: 'onUnitySceneLoaded',
             data: {
-              name: name,
-              buildIndex: buildIndex,
-              isLoaded: isLoaded == 1,
-              isValid: isValid == 1,
-            },
-          },
-          "*"
-        );
-      };
+                'name': name,
+                'buildIndex': buildIndex,
+                'isLoaded': isLoaded == 1,
+                'isValid': isValid == 1,
+            }
+            }, '*');
+        };
 
-      window.parent.addEventListener("unityFlutterBiding", function (args) {
-        const obj = JSON.parse(args.data);
-        mainUnityInstance.SendMessage(
-          obj.gameObject,
-          obj.methodName,
-          obj.message
-        );
-      });
+        window.parent.addEventListener('unityFlutterBiding', function (args) {
+            const obj = JSON.parse(args.data);
+            mainUnityInstance.SendMessage(obj.gameObject, obj.methodName, obj.message);
+        });
 
-      window.parent.addEventListener(
-        "unityFlutterBidingFnCal",
-        function (args) {
-          mainUnityInstance.SendMessage("GameManager", "HandleWebFnCall", args);
-        }
-      );
-
-      var unityInstance = UnityLoader.instantiate(
-        "unityContainer",
-        "Build/UnityLibrary.json",
-        { onProgress: UnityProgress }
-      );
-      //<----------->Libreria<----------------->
-      let globalUnityInstance;
-
-      window["receiveMessageFromUnity"] = function (params) {
-        window.parent.postMessage(params, "*");
-      };
-
-      window.parent.addEventListener("flutter2js", function (params) {
-        const obj = JSON.parse(params.data);
-        globalUnityInstance.SendMessage(obj.gameObject, obj.method, obj.data);
-      });
-      window.parent.postMessage("unity_loaded", "*");
-      globalUnityInstance = unityInstance;
-      //<----------->Libreria<----------------->
-      
+        window.parent.addEventListener('unityFlutterBidingFnCal', function (args) {
+            mainUnityInstance.SendMessage('GameManager', 'HandleWebFnCall', args);
+        });
+        
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/UnityLibrary.json", {onProgress: UnityProgress});
     </script>
   </head>
   <body>
     <div class="webgl-content">
-      <div id="unityContainer" style="aspect-ratio: 3/4"></div>
+      <div id="unityContainer"style="aspect-ratio: 3/4;"></div>
       <div class="footer">
         <div class="webgl-logo"></div>
         <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
